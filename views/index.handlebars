@@ -15,7 +15,6 @@
     {{#each members}}
     <li class="list-group-item">{{this.name}}: {{this.email}}</li>
     {{/each}}
-    <div id="output"></div>
 </ul>
 <script>
     const submitButton = document.getElementById('submit-btn');
@@ -24,21 +23,23 @@
         loadData();
     })
     function loadData() {
+        const newName = document.querySelector('#name').value;
+        const newEmail = document.querySelector('#email').value;
         const body = {
-            name: document.querySelector('#name').value,
-            email: document.querySelector('#email').value
+            name: newName,
+            email: newEmail
         }
-        console.log(body);
         // create an XHR object
         const xhr = new XMLHttpRequest();
         // open
         xhr.open('POST', '/api/members', true);
-        xhr.setRequestHeader('Content-Type', "application/json:charset=UTF-8");
+        xhr.setRequestHeader("Content-type", "application/json");
         xhr.onload = function () {
-            console.log(this);
             if (this.status == 200) {
-                console.log(this.responseText);
-                document.getElementById('output').innerHTML = `<h1>${this.responseText}</h1>`;
+                const newLi = document.createElement('li');
+                newLi.classList.add('list-group-item');
+                newLi.innerHTML = `${newName}:${newEmail}`
+                document.getElementById('list').appendChild(newLi)
             } else {
                 alert('ERROR');
             }
