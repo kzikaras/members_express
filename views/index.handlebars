@@ -1,18 +1,49 @@
 <h1 class="text-center mb-3">{{title}}</h1>
-<form action="/api/members" method="post" class="mb-4">
+<form class="mb-4">
     <div class="form-group">
         <label for="name">Name</label>
-        <input type="text" class="form-control" name="name">
+        <input id="name" type="text" class="form-control" name="name">
     </div>
     <div class="form-group">
         <label for="email">Email</label>
-        <input type="text" class="form-control" name="email">
+        <input id="email" type="text" class="form-control" name="email">
     </div>
-    <input type="submit" value="Add Member" class="btn btn-primary btn-block">
+    <input id="submit-btn" type="submit" value="Add Member" class="btn btn-primary btn-block">
 </form>
 <h4>Members</h4>
-<ul class="list-group">
+<ul id="list" class="list-group">
     {{#each members}}
     <li class="list-group-item">{{this.name}}: {{this.email}}</li>
     {{/each}}
 </ul>
+<script>
+    const submitButton = document.getElementById('submit-btn');
+    submitButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        loadData();
+    })
+    function loadData() {
+        const newName = document.querySelector('#name').value;
+        const newEmail = document.querySelector('#email').value;
+        const body = {
+            name: newName,
+            email: newEmail
+        }
+        // create an XHR object
+        const xhr = new XMLHttpRequest();
+        // open
+        xhr.open('POST', '/api/members', true);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.onload = function () {
+            if (this.status == 200) {
+                const newLi = document.createElement('li');
+                newLi.classList.add('list-group-item');
+                newLi.innerHTML = `${newName}:${newEmail}`
+                document.getElementById('list').appendChild(newLi)
+            } else {
+                alert('ERROR');
+            }
+        }
+        xhr.send(JSON.stringify(body));
+    }
+</script>
